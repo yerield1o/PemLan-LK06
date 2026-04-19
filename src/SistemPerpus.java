@@ -33,43 +33,66 @@ public class SistemPerpus {
             System.out.println("5. Laporan");
             System.out.println("6. Keluar");
             System.out.print("Pilihan: ");
-            int pilihan = input.nextInt();
+            String pilihan = input.nextLine();
 
             switch (pilihan) {
-                case 1:
+                case "1":
+                    System.out.println("1. Daftar Siswa");
+                    System.out.println("2. Tambah Siswa");
+                    System.out.println("3. Perbarui Siswa");
+                    System.out.println("4. Hapus Siswa");
+                    System.out.println("Pilihan: ");
+                    String pilihanSiswa = input.nextLine();
+
+                    switch (pilihanSiswa) {
+                        case "1":
+                            ManagerSiswa.viewSiswa();
+                            break;
+                        case "2":
+                            ManagerSiswa.addSiswa();
+                            break;
+                        case "3":
+                            ManagerSiswa.updateSiswa();
+                            break;
+                        case "4":
+                            ManagerSiswa.deleteSiswa();
+                            break;
+                        default:
+                            System.out.println("Pilihan invalid");
+                    }
                     break;
-                case 2:
+                case "2":
                     System.out.println("1. Daftar Buku");
                     System.out.println("2. Tambah Buku");
                     System.out.println("3. Perbarui Buku");
                     System.out.println("4. Hapus Buku");
                     System.out.println("Pilihan: ");
-                    int pilihanBuku = input.nextInt();
+                    String pilihanBuku = input.nextLine();
 
                     switch (pilihanBuku) {
-                        case 1:
+                        case "1":
                             ManagerBuku.viewBuku();
                             break;
-                        case 2:
+                        case "2":
                             ManagerBuku.addBuku();
                             break;
-                        case 3:
+                        case "3":
                             ManagerBuku.updateBuku();
                             break;
-                        case 4:
+                        case "4":
                             ManagerBuku.deleteBuku();
                             break;
                         default:
                             System.out.println("Pilihan invalid");
                     }
                     break;
-                case 3:
+                case "3":
                     break;
-                case 4:
+                case "4":
                     break;
-                case 5:
+                case "5":
                     break;
-                case 6:
+                case "6":
                     System.out.println("Keluar...");
                     System.exit(0);
                     break;

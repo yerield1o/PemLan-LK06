@@ -6,16 +6,19 @@ public class ManagerBuku {
     private static Scanner scan = new Scanner(System.in);
 
     public static void addBuku(){
-        System.out.print("Masukkan nama buku: ");
-        String nama = scan.nextLine();
-
         System.out.print("Masukkan kode buku: ");
         String kode = scan.nextLine();
 
-        String buku = kode + "," + nama;
+        System.out.print("Masukkan nama buku: ");
+        String nama = scan.nextLine();
+
+        System.out.print("Masukkan jenis buku: ");
+        String jenis = scan.nextLine();
+
+        String buku = kode + "," + nama  + "," + jenis;
 
         FileHandling.writeFile(namaFile, buku, true);
-        System.out.println("buku berhasil ditambahkan");
+        System.out.println("Buku berhasil ditambahkan");
     }
 
     public static void viewBuku() {
@@ -26,12 +29,12 @@ public class ManagerBuku {
             return;
         }
 
-        System.out.println(" Kode Buku | Nama Buku ");
+        System.out.println(" Kode Buku | Nama Buku | Jenis Buku");
 
         for (String k : buku) {
             String[]info = k.split(",");
-            if (info.length == 2){
-                System.out.println(info[0] + " | " + info[1]);
+            if (info.length == 3){
+                System.out.println(info[0] + " | " + info[1] + " | " + info[2]);
             }
         }
     }
@@ -44,12 +47,15 @@ public class ManagerBuku {
         boolean ditemukan = false;
         for (int i = 0; i < buku.size(); i++){
             String[] info = buku.get(i).split(",");
-            if (info.length == 2 && info[0].equals(kode)){
+            if (info.length == 3 && info[0].equals(kode)){
                 ditemukan = true;
                 System.out.println("Nama buku baru : ");
                 String namaBukuBaru = scan.nextLine();
 
-                String bukuBaru = kode + "," + namaBukuBaru;
+                System.out.println("Jenis buku baru : ");
+                String jenisBukuBaru = scan.nextLine();
+
+                String bukuBaru = kode + "," + namaBukuBaru  + "," + jenisBukuBaru;
                 buku.set(i,bukuBaru);
                 break;
             }
@@ -70,7 +76,7 @@ public class ManagerBuku {
 
         List <String> buku = FileHandling.readFile(namaFile);
         boolean ditemukan = false;
-        for (int i = 0; i < buku.size(); i++) {
+        for (int i = buku.size() - 1; i >= 0; i--) {
             String[] info = buku.get(i).split(",");
             if (info.length == 2 && info[0].equals(kode)) {
                 ditemukan = true;
