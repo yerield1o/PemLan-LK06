@@ -28,10 +28,11 @@ public class SistemPerpus {
             System.out.println("===MENU===");
             System.out.println("1. Managemen Siswa");
             System.out.println("2. Managemen Buku");
-            System.out.println("3. Peminjaman");
-            System.out.println("4. Pengembalian");
-            System.out.println("5. Laporan");
-            System.out.println("6. Keluar");
+            System.out.println("3. Managemen Staff");
+            System.out.println("4. Peminjaman");
+            System.out.println("5. Pengembalian");
+            System.out.println("6. Laporan");
+            System.out.println("7. Keluar");
             System.out.print("Pilihan: ");
             String pilihan = input.nextLine();
 
@@ -87,12 +88,39 @@ public class SistemPerpus {
                     }
                     break;
                 case "3":
+                    System.out.println("\n--- Menu Pegawai ---");
+                    System.out.println("1. Daftar Pegawai");
+                    System.out.println("2. Tambah Pegawai");
+                    System.out.println("3. Perbarui Pegawai");
+                    System.out.println("4. Hapus Pegawai");
+                    System.out.print("Pilihan: ");
+
+                    String pilihanPegawai = input.nextLine();
+
+                    switch (pilihanPegawai) {
+                        case "1":
+                            ManagerStaff.viewStaff();
+                            break;
+                        case "2":
+                            ManagerStaff.addStaff();
+                            break;
+                        case "3":
+                            ManagerStaff.updateStaff();
+                            break;
+                        case "4":
+                            ManagerStaff.deleteStaff();
+                            break;
+                        default:
+                            System.out.println("Pilihan invalid");
+                    }
                     break;
                 case "4":
                     break;
                 case "5":
                     break;
                 case "6":
+                    break;
+                case "7":
                     System.out.println("Keluar...");
                     System.exit(0);
                     break;
