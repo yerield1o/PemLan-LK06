@@ -29,10 +29,9 @@ public class SistemPerpus {
             System.out.println("1. Managemen Siswa");
             System.out.println("2. Managemen Buku");
             System.out.println("3. Managemen Staff");
-            System.out.println("4. Peminjaman");
-            System.out.println("5. Pengembalian");
-            System.out.println("6. Laporan");
-            System.out.println("7. Keluar");
+            System.out.println("4. Peminjaman/Pengembalian");
+            System.out.println("5. Laporan");
+            System.out.println("6. Keluar");
             System.out.print("Pilihan: ");
             String pilihan = input.nextLine();
 
@@ -42,7 +41,7 @@ public class SistemPerpus {
                     System.out.println("2. Tambah Siswa");
                     System.out.println("3. Perbarui Siswa");
                     System.out.println("4. Hapus Siswa");
-                    System.out.println("Pilihan: ");
+                    System.out.print("Pilihan: ");
                     String pilihanSiswa = input.nextLine();
 
                     switch (pilihanSiswa) {
@@ -67,7 +66,7 @@ public class SistemPerpus {
                     System.out.println("2. Tambah Buku");
                     System.out.println("3. Perbarui Buku");
                     System.out.println("4. Hapus Buku");
-                    System.out.println("Pilihan: ");
+                    System.out.print("Pilihan: ");
                     String pilihanBuku = input.nextLine();
 
                     switch (pilihanBuku) {
@@ -115,12 +114,26 @@ public class SistemPerpus {
                     }
                     break;
                 case "4":
+                    System.out.println("1. Peminjaman Buku");
+                    System.out.println("2. Pengembalian Buku");
+                    System.out.print("Pilihan: ");
+                    String pilihanTransaksi = input.nextLine();
+
+                    switch (pilihanTransaksi) {
+                        case "1":
+                            Transaksi.pinjamBuku();
+                            break;
+                        case "2":
+                            Transaksi.kembalikanBuku();
+                            break;
+                        default:
+                            System.out.println("Pilihan invalid");
+                    }
                     break;
                 case "5":
+                    Laporan.pilihLaporan();
                     break;
                 case "6":
-                    break;
-                case "7":
                     System.out.println("Keluar...");
                     System.exit(0);
                     break;
@@ -131,7 +144,7 @@ public class SistemPerpus {
     }
 
     public static void main(String[] args) {
-        if (!login) {
+        while (!login) {
             login();
         }
         menu();
