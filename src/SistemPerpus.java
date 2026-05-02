@@ -1,152 +1,163 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.List;
-import java.util.Scanner;
 
 public class SistemPerpus {
-    private static Scanner input = new Scanner(System.in);
-    private static boolean login = false;
-    private static String nama = "";
+    private JFrame frame;
+    private JPanel cardPanel;
+    private CardLayout cardLayout;
+    private String nama = "";
 
-    private static void login(){
-        System.out.println("===LOGIN===");
-        System.out.print("Masukkan NIP :");
-        String NIPlogin = input.nextLine();
-         List <String> staff = FileHandling.readFile("staff.txt");
-         for (String s : staff){
-             String [] info = s.split(",");
-             if (info.length >= 2 && info[0].equals(NIPlogin)){
-                 login = true;
-                 nama = info[1];
-                 System.out.println("Login berhasil! Selamat Datang " + nama);
-                 return;
-             }
-         }
-         System.out.println("NIP tidak ditemukan");
+    public SistemPerpus() {
+        frame = new JFrame("Sistem Manajemen Perpustakaan");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(450, 400);
+        frame.setLocationRelativeTo(null);
+
+        cardLayout = new CardLayout();
+        cardPanel = new JPanel(cardLayout);
+
+        cardPanel.add(createLoginPanel(), "Login");
+        cardPanel.add(createMenuPanel(), "Menu");
+
+        frame.add(cardPanel);
+        frame.setVisible(true);
     }
 
-    private static void menu(){
-        while(login) {
-            System.out.println("===MENU===");
-            System.out.println("1. Managemen Siswa");
-            System.out.println("2. Managemen Buku");
-            System.out.println("3. Managemen Staff");
-            System.out.println("4. Peminjaman/Pengembalian");
-            System.out.println("5. Laporan");
-            System.out.println("6. Keluar");
-            System.out.print("Pilihan: ");
-            String pilihan = input.nextLine();
+    private JPanel createLoginPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
 
-            switch (pilihan) {
-                case "1":
-                    System.out.println("1. Daftar Siswa");
-                    System.out.println("2. Tambah Siswa");
-                    System.out.println("3. Perbarui Siswa");
-                    System.out.println("4. Hapus Siswa");
-                    System.out.print("Pilihan: ");
-                    String pilihanSiswa = input.nextLine();
+        JLabel titleLabel = new JLabel("LOGIN");
 
-                    switch (pilihanSiswa) {
-                        case "1":
-                            ManagerSiswa.viewSiswa();
-                            break;
-                        case "2":
-                            ManagerSiswa.addSiswa();
-                            break;
-                        case "3":
-                            ManagerSiswa.updateSiswa();
-                            break;
-                        case "4":
-                            ManagerSiswa.deleteSiswa();
-                            break;
-                        default:
-                            System.out.println("Pilihan invalid");
+        JLabel nipLabel = new JLabel("Masukkan NIP:");
+        JTextField nipField = new JTextField(15);
+        JButton loginButton = new JButton("Login");
+
+        gbc.gridx = 0; gbc.gridy = 0; gbc.gridwidth = 2;
+        panel.add(titleLabel, gbc);
+
+        gbc.gridy = 1; gbc.gridwidth = 1;
+        panel.add(nipLabel, gbc);
+
+        gbc.gridx = 1;
+        panel.add(nipField, gbc);
+
+        gbc.gridx = 0; gbc.gridy = 2; gbc.gridwidth = 2;
+        panel.add(loginButton, gbc);
+
+        loginButton.addActionListener(e -> {
+            String NIPlogin = nipField.getText().trim();
+            boolean loginSuccess = false;
+
+            try {
+                List<String> staff = FileHandling.readFile("staff.txt");
+                for (String s : staff) {
+                    String[] info = s.split(",");
+                    if (info.length >= 2 && info[0].equals(NIPlogin)) {
+                        loginSuccess = true;
+                        nama = info[1];
+                        JOptionPane.showMessageDialog(frame, "Selamat Datang " + nama, "Success", JOptionPane.INFORMATION_MESSAGE);
+                        cardLayout.show(cardPanel, "Menu");
+                        break;
                     }
-                    break;
-                case "2":
-                    System.out.println("1. Daftar Buku");
-                    System.out.println("2. Tambah Buku");
-                    System.out.println("3. Perbarui Buku");
-                    System.out.println("4. Hapus Buku");
-                    System.out.print("Pilihan: ");
-                    String pilihanBuku = input.nextLine();
+                }
 
-                    switch (pilihanBuku) {
-                        case "1":
-                            ManagerBuku.viewBuku();
-                            break;
-                        case "2":
-                            ManagerBuku.addBuku();
-                            break;
-                        case "3":
-                            ManagerBuku.updateBuku();
-                            break;
-                        case "4":
-                            ManagerBuku.deleteBuku();
-                            break;
-                        default:
-                            System.out.println("Pilihan invalid");
-                    }
-                    break;
-                case "3":
-                    System.out.println("\n--- Menu Pegawai ---");
-                    System.out.println("1. Daftar Pegawai");
-                    System.out.println("2. Tambah Pegawai");
-                    System.out.println("3. Perbarui Pegawai");
-                    System.out.println("4. Hapus Pegawai");
-                    System.out.print("Pilihan: ");
-
-                    String pilihanPegawai = input.nextLine();
-
-                    switch (pilihanPegawai) {
-                        case "1":
-                            ManagerStaff.viewStaff();
-                            break;
-                        case "2":
-                            ManagerStaff.addStaff();
-                            break;
-                        case "3":
-                            ManagerStaff.updateStaff();
-                            break;
-                        case "4":
-                            ManagerStaff.deleteStaff();
-                            break;
-                        default:
-                            System.out.println("Pilihan invalid");
-                    }
-                    break;
-                case "4":
-                    System.out.println("1. Peminjaman Buku");
-                    System.out.println("2. Pengembalian Buku");
-                    System.out.print("Pilihan: ");
-                    String pilihanTransaksi = input.nextLine();
-
-                    switch (pilihanTransaksi) {
-                        case "1":
-                            Transaksi.pinjamBuku();
-                            break;
-                        case "2":
-                            Transaksi.kembalikanBuku();
-                            break;
-                        default:
-                            System.out.println("Pilihan invalid");
-                    }
-                    break;
-                case "5":
-                    Laporan.pilihLaporan();
-                    break;
-                case "6":
-                    System.out.println("Keluar...");
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Pilihan invalid");
+                if (!loginSuccess) {
+                    JOptionPane.showMessageDialog(frame, "NIP tidak ditemukan", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(frame, "Terjadi kesalahan saat membaca file staff.txt", "Error", JOptionPane.ERROR_MESSAGE);
             }
+        });
+
+        return panel;
+    }
+
+    private JPanel createMenuPanel() {
+        JPanel panel = new JPanel(new GridLayout(7, 1, 10, 10));
+        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+
+        JLabel titleLabel = new JLabel("MENU UTAMA", SwingConstants.CENTER);
+
+        JButton btnSiswa = new JButton("1. Managemen Siswa");
+        JButton btnBuku = new JButton("2. Managemen Buku");
+        JButton btnStaff = new JButton("3. Managemen Staff");
+        JButton btnTransaksi = new JButton("4. Peminjaman/Pengembalian");
+        JButton btnLaporan = new JButton("5. Laporan");
+        JButton btnKeluar = new JButton("6. Keluar");
+
+        btnSiswa.addActionListener(e -> showSiswaMenu());
+        btnBuku.addActionListener(e -> showBukuMenu());
+        btnStaff.addActionListener(e -> showStaffMenu());
+        btnTransaksi.addActionListener(e -> showTransaksiMenu());
+        btnLaporan.addActionListener(e -> showLaporanMenu());
+
+        btnKeluar.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(frame, "Keluar?", "Keluar", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        });
+
+        panel.add(titleLabel);
+        panel.add(btnSiswa);
+        panel.add(btnBuku);
+        panel.add(btnStaff);
+        panel.add(btnTransaksi);
+        panel.add(btnLaporan);
+        panel.add(btnKeluar);
+
+        return panel;
+    }
+
+    private void showSiswaMenu() {
+        String[] options = {"Daftar Siswa", "Tambah Siswa", "Perbarui Siswa", "Hapus Siswa", "Batal"};
+        int choice = JOptionPane.showOptionDialog(frame, "Pilih Aksi Managemen Siswa:", "Managemen Siswa",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+        switch (choice) {
+            case 0: ManagerSiswa.viewSiswa(); break;
+            case 1: ManagerSiswa.addSiswa(); break;
+            case 2: ManagerSiswa.updateSiswa(); break;
+            case 3: ManagerSiswa.deleteSiswa(); break;
         }
+    }
+
+    private void showBukuMenu() {
+        String[] options = {"Daftar Buku", "Tambah Buku", "Perbarui Buku", "Hapus Buku", "Batal"};
+        int choice = JOptionPane.showOptionDialog(frame, "Pilih Aksi Managemen Buku:", "Managemen Buku",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+        switch (choice) {
+            case 0: ManagerBuku.viewBuku(); break;
+            case 1: ManagerBuku.addBuku(); break;
+            case 2: ManagerBuku.updateBuku(); break;
+            case 3: ManagerBuku.deleteBuku(); break;
+        }
+    }
+
+    private void showStaffMenu() {
+        String[] options = {"Daftar Pegawai", "Tambah Pegawai", "Perbarui Pegawai", "Hapus Pegawai", "Batal"};
+        int choice = JOptionPane.showOptionDialog(frame, "Pilih Aksi Managemen Pegawai:", "Managemen Pegawai",
+                JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+        switch (choice) {
+            case 0: ManagerStaff.viewStaff(); break;
+            case 1: ManagerStaff.addStaff(); break;
+            case 2: ManagerStaff.updateStaff(); break;
+            case 3: ManagerStaff.deleteStaff(); break;
+        }
+    }
+
+    private void showTransaksiMenu() {
+    }
+
+    private void showLaporanMenu() {
     }
 
     public static void main(String[] args) {
-        while (!login) {
-            login();
-        }
-        menu();
+        SwingUtilities.invokeLater(() -> new SistemPerpus());
     }
 }

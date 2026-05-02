@@ -1,109 +1,146 @@
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.util.List;
-import java.util.Scanner;
 
 public class ManagerSiswa {
     public static String namaFile = "siswa.txt";
-    private static Scanner scan = new Scanner(System.in);
 
-    public static void addSiswa(){
-        System.out.print("Masukkan NIS siswa: ");
-        String nis = scan.nextLine();
+    public static void addSiswa() {
+        JTextField nisField = new JTextField(15);
+        JTextField namaField = new JTextField(15);
+        JTextField alamatField = new JTextField(15);
 
-        System.out.print("Masukkan nama siswa: ");
-        String nama = scan.nextLine();
+        JPanel myPanel = new JPanel(new GridLayout(3, 2, 5, 5));
+        myPanel.add(new JLabel("NIS:"));
+        myPanel.add(nisField);
+        myPanel.add(new JLabel("Nama:"));
+        myPanel.add(namaField);
+        myPanel.add(new JLabel("Alamat:"));
+        myPanel.add(alamatField);
 
-        System.out.print("Masukkan alamat siswa: ");
-        String alamat = scan.nextLine();
+        int result = JOptionPane.showConfirmDialog(null, myPanel,
+                "Tambah Siswa Baru", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
 
-        String siswa = nis + "," + nama + "," + alamat;
+        if (result == JOptionPane.OK_OPTION) {
+            String nis = nisField.getText().trim();
+            String nama = namaField.getText().trim();
+            String alamat = alamatField.getText().trim();
 
-        FileHandling.writeFile(namaFile, siswa, true);
-        System.out.println("Siswa berhasil ditambahkan");
+            if (nis.isEmpty() || nama.isEmpty() || alamat.isEmpty()) {
+                JOptionPane.showMessageDialog(null, "Semua kolom harus diisi!", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String siswa = nis + "," + nama + "," + alamat;
+            FileHandling.writeFile(namaFile, siswa, true);
+            JOptionPane.showMessageDialog(null, "Siswa berhasil ditambahkan!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 
     public static void viewSiswa() {
         List<String> siswa = FileHandling.readFile(namaFile);
 
-        if(siswa.isEmpty()){
-            System.out.println("Tidak ada siswa");
+        if (siswa.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Tidak ada data siswa.", "Informasi", JOptionPane.INFORMATION_MESSAGE);
             return;
         }
 
-        System.out.println(" NIS Siswa | Nama Siswa | Alamat Siswa ");
+        String[] columnNames = {"NIS", "Nama", "Alamat"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
 
         for (String k : siswa) {
-            String[]info = k.split(",");
-            if (info.length == 3){
-                System.out.println(info[0] + " | " + info[1] + " | " + info[2]);
+            String[] info = k.split(",");
+            if (info.length == 3) {
+                model.addRow(info);
             }
         }
+
+        JTable table = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(table);
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+
+        JOptionPane.showMessageDialog(null, scrollPane, "Daftar Siswa", JOptionPane.PLAIN_MESSAGE);
     }
 
     public static void updateSiswa() {
-        System.out.print("Masukkan NIS siswa: ");
-        String nis = scan.nextLine();
+        String nis = JOptionPane.showInputDialog(null, "Masukkan NIS siswa yang ingin diperbarui:",
+                "Cari Siswa", JOptionPane.QUESTION_MESSAGE);
+
+        if (nis == null || nis.trim().isEmpty()) return;
 
         List<String> siswa = FileHandling.readFile(namaFile);
         boolean ditemukan = false;
+
         for (int i = 0; i < siswa.size(); i++) {
-            String namaBaru = "";
-            String alamatBaru = "";
             String[] info = siswa.get(i).split(",");
-            if (info.length == 3 && info[0].equals(nis)) {
-                namaBaru = info[1];
-                alamatBaru = info[2];
+            if (info.length == 3 && info[0].equals(nis.trim())) {
                 ditemukan = true;
-                System.out.println("1. Ubah nama");
-                System.out.println("2. Ubah alamat");
-                System.out.println("Pilihan: ");
-                String pilihan = scan.nextLine();
-                switch (pilihan) {
-                    case "1":
-                        System.out.println("Nama siswa baru: ");
-                        namaBaru = scan.nextLine();
-                        break;
-                    case "2":
-                        System.out.println("Alamat Siswa Baru: ");
-                        alamatBaru = scan.nextLine();
-                        break;
-                    default:
-                        System.out.println("Pilihan Invalid");
-                        break;
+
+                JTextField namaField = new JTextField(info[1], 15);
+                JTextField alamatField = new JTextField(info[2], 15);
+
+                JPanel myPanel = new JPanel(new GridLayout(2, 2, 5, 5));
+                myPanel.add(new JLabel("Nama Baru:"));
+                myPanel.add(namaField);
+                myPanel.add(new JLabel("Alamat Baru:"));
+                myPanel.add(alamatField);
+
+                int result = JOptionPane.showConfirmDialog(null, myPanel,
+                        "Perbarui Data Siswa (NIS: " + info[0] + ")", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+
+                if (result == JOptionPane.OK_OPTION) {
+                    String namaBaru = namaField.getText().trim();
+                    String alamatBaru = alamatField.getText().trim();
+
+                    if (namaBaru.isEmpty() || alamatBaru.isEmpty()) {
+                        JOptionPane.showMessageDialog(null, "Nama dan Alamat tidak boleh kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    String siswaBaru = info[0] + "," + namaBaru + "," + alamatBaru;
+                    siswa.set(i, siswaBaru);
+                    FileHandling.rewriteFile(namaFile, siswa);
+                    JOptionPane.showMessageDialog(null, "Siswa berhasil diperbarui!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 }
-                String siswaBaru = nis + "," + namaBaru + "," + alamatBaru;
-                siswa.set(i, siswaBaru);
                 break;
             }
         }
-        if (ditemukan){
-            FileHandling.rewriteFile(namaFile, siswa);
-            System.out.println("Siswa berhasil diperbaharui");
-        }
-        else{
-            System.out.println("Siswa dengan NIS " + nis + " tidak ditemukan");
+
+        if (!ditemukan) {
+            JOptionPane.showMessageDialog(null, "Siswa dengan NIS " + nis + " tidak ditemukan.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    public static void deleteSiswa(){
-        System.out.print("Masukkan NIS siswa: ");
-        String nis =  scan.nextLine();
+    public static void deleteSiswa() {
+        String nis = JOptionPane.showInputDialog(null, "Masukkan NIS siswa yang ingin dihapus:",
+                "Hapus Siswa", JOptionPane.QUESTION_MESSAGE);
 
-        List <String> siswa = FileHandling.readFile(namaFile);
+        if (nis == null || nis.trim().isEmpty()) return;
+
+        List<String> siswa = FileHandling.readFile(namaFile);
         boolean ditemukan = false;
+
         for (int i = siswa.size() - 1; i >= 0; i--) {
             String[] info = siswa.get(i).split(",");
-            if (info.length == 3 && info[0].equals(nis)) {
+            if (info.length == 3 && info[0].equals(nis.trim())) {
                 ditemukan = true;
-                siswa.remove(i);
+
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "Apakah Anda yakin ingin menghapus siswa:\nNama: " + info[1],
+                        "Konfirmasi Hapus", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    siswa.remove(i);
+                    FileHandling.rewriteFile(namaFile, siswa);
+                    JOptionPane.showMessageDialog(null, "Siswa berhasil dihapus!", "Sukses", JOptionPane.INFORMATION_MESSAGE);
+                }
                 break;
             }
         }
-        if (ditemukan){
-            FileHandling.rewriteFile(namaFile, siswa);
-            System.out.println("Siswa berhasil dihapus!");
-        }
-        else{
-            System.out.println("Siswa dengan NIS " + nis + " tidak ditemukan");
+
+        if (!ditemukan) {
+            JOptionPane.showMessageDialog(null, "Siswa dengan NIS " + nis + " tidak ditemukan.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 }
