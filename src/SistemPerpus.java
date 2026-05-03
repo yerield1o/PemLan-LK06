@@ -91,8 +91,8 @@ public class SistemPerpus {
         btnSiswa.addActionListener(e -> showSiswaMenu());
         btnBuku.addActionListener(e -> showBukuMenu());
         btnStaff.addActionListener(e -> showStaffMenu());
-        btnTransaksi.addActionListener(e -> showTransaksiMenu());
-        btnLaporan.addActionListener(e -> showLaporanMenu());
+        btnTransaksi.addActionListener(e -> new Transaksi().setVisible(true));
+        btnLaporan.addActionListener(e -> new Laporan().setVisible(true));
 
         btnKeluar.addActionListener(e -> {
             int confirm = JOptionPane.showConfirmDialog(frame, "Keluar?", "Keluar", JOptionPane.YES_NO_OPTION);
@@ -152,6 +152,7 @@ public class SistemPerpus {
     }
 
     private void showTransaksiMenu() {
+
     }
 
     private void showLaporanMenu() {
